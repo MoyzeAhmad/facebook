@@ -31,7 +31,32 @@ class Authentication:
         my_cursor.execute(query, (user_name, password))
 
         user = my_cursor.fetchone()
+        obj = Application()
+        obj.menu(user,user_name)
 
+class Application:
+    def __init__(self):
+        self.register_user = Register_User()
+        self.login_user = Authentication()
+    def run(self):
+        # Runs the main application through loop
+        while True:
+            print("\nOptions:")
+            print("1. Register User")
+            print("2. login User")
+            print("3. Exit")
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                self.register_user.register()
+            elif choice == "2":
+                self.login_user.login()
+            elif choice == "3":
+                print("Exiting!")
+                break
+            else:
+                print("Invalid choice!")
+    def menu(self,user,user_name):
         if user:
             users_name = user_name
             print("--------------------------------------")
@@ -72,53 +97,6 @@ class Authentication:
                     print("Invalid choice.")
         else:
             print("Invalid username or password.")
-
-    def View_All_Posts(self):
-        query = "SELECT id, name, content FROM posts"
-        try:
-            my_cursor.execute(query)
-            posts = my_cursor.fetchall()
-
-            if posts:
-                for idx, post in enumerate(posts, start=1):
-                    post_id = post[0]
-                    post_user_name = post[1]
-                    post_content = post[2]
-
-                    like_query = "SELECT COUNT(*) FROM likes WHERE post_id = %s"
-                    my_cursor.execute(like_query, (post_id,))
-                    like_count = my_cursor.fetchone()[0]
-                    comment_query = "SELECT COUNT(*) FROM comments WHERE post_id = %s"
-                    my_cursor.execute(comment_query, (post_id,))
-                    comment_count = my_cursor.fetchone()[0]
-                    print(f"{idx}. {post_user_name}: {post_content} ({like_count} likes, {comment_count} comments)")
-            else:
-                print("No posts yet.")
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-
-class Application:
-    def __init__(self):
-        self.register_user = Register_User()
-        self.login_user = Authentication()
-    def run(self):
-        # Runs the main application through loop
-        while True:
-            print("\nOptions:")
-            print("1. Register User")
-            print("2. login User")
-            print("3. Exit")
-            choice = input("Enter your choice: ")
-
-            if choice == "1":
-                self.register_user.register()
-            elif choice == "2":
-                self.login_user.login()
-            elif choice == "3":
-                print("Exiting!")
-                break
-            else:
-                print("Invalid choice!")
 
 if __name__ == "__main__":
     app = Application()
