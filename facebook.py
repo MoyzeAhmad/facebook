@@ -8,7 +8,6 @@ class Register_User:
             user_name = input("Enter user name: ")
             password = input("Enter password: ")
 
-            # Check if user already exists
             my_cursor.execute("SELECT user_name FROM users WHERE user_name = %s", (user_name,))
             existing_user = my_cursor.fetchone()
 
@@ -19,7 +18,7 @@ class Register_User:
                     "INSERT INTO users (user_name, password) VALUES (%s, %s)",
                     (user_name, password)
                 )
-                mydb.commit()  # Save the changes
+                mydb.commit()
                 print("User registered successfully!")
 
 class Authentication:
@@ -31,8 +30,7 @@ class Authentication:
         query = "SELECT * FROM users WHERE user_name = %s AND password = %s"
         my_cursor.execute(query, (user_name, password))
 
-        # Fetch the result
-        user = my_cursor.fetchone()  # Returns one record or None if no match is found
+        user = my_cursor.fetchone()
 
         if user:
             users_name = user_name
@@ -47,40 +45,31 @@ class Authentication:
                 print("4. Logout")
                 choice = input("Enter your choice: ")
                 if choice == "1":
-                    while True:
-                        print("-------------------")
-                        print("Welcome to Feed")
-                        print("-------------------")
-                        obj = Feed()
-                        obj.View_Posts(users_name)
+                    print("-------------------")
+                    print("Welcome to Feed")
+                    print("-------------------")
+                    obj = Feed()
+                    obj.View_Posts(users_name)
+
                 elif choice == "2":
                     print("---------------------")
-                    print("Lets create a Post")
+                    print("Let's create a Post")
                     print("---------------------")
                     obj = Post()
-                    obj.Create_Post()
+                    obj.Create_Post(users_name)
 
                 elif choice == "3":
                     print("---------------------")
-                    print("Welcome To your Profile")
+                    print("Welcome To Your Profile")
                     print("---------------------")
-                    while True:
-                        print("\nOptions:")
-                        print("1. My Feed")
-                        print("2. Update Profile")
-                        print("3. Go Back")
-                        choice = input("Enter your choice: ")
-                        if choice == '1':
-                            obj = Feed()
-                            obj.get_user_posts(users_name)
-                        if choice == '2':
-                            obj = Profile
-                            obj.Update_Profile()
+                    obj = Feed()
+                    obj.get_user_posts(users_name)
+
                 elif choice == "4":
-                    print("Exiting!")
+                    print("Logging out!")
                     break
                 else:
-                    print("Invalid choice")
+                    print("Invalid choice.")
         else:
             print("Invalid username or password.")
 
